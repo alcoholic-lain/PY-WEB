@@ -44,10 +44,9 @@ class Vehicule(models.Model):
         ]
 
     def clean(self):
-        if (
-            self.entreprise_id
-            and self.entreprise.type_entreprise != Entreprise.Type.TRANSPORTEUR
-        ):
+        if self.entreprise_id and Entreprise.objects.filter(
+            pk=self.entreprise_id
+        ).exclude(type_entreprise=Entreprise.Type.TRANSPORTEUR).exists():
             raise ValidationError(
                 {"entreprise": "Un véhicule doit appartenir à une entreprise transporteur."}
             )

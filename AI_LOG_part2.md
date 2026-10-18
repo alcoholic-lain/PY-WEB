@@ -15,3 +15,16 @@
   - Règle 5 : cascade dans `save()` sous `transaction.atomic()` ; acceptation refusée si l'expédition n'est plus « publiée », ce qui garantit une seule offre acceptée par expédition.
   - Normalisation du matricule (sans séparateurs, majuscules) pour que deux formats du même matricule soient détectés comme doublons.
   - Vérification : 19 tests passent (`uv run manage.py test OffresApp`).
+
+## Entrée 2026-10-18 — Revue finale et durcissement des règles métier
+- Vérifications : lecture complète du cahier des charges, revue des cinq modèles et des migrations, puis exécution de la suite Django.
+- Écarts identifiés :
+  - `Utilisateur.save()` vérifiait le suffixe `@gmail.com`, mais ne lançait pas les autres validateurs de `EmailField` ; un email mal formé pouvait donc passer par une sauvegarde directe.
+  - Certaines règles métier lisaient des objets liés déjà en cache, et pouvaient donc se baser sur un ancien statut d'expédition, une ancienne disponibilité de véhicule ou un ancien type d'entreprise.
+  - La cascade séquentielle garantissait une seule offre acceptée, mais aucune contrainte de base ne protégeait cette règle en cas d'écritures concurrentes.
+- Corrections apportées :
+  - `Utilisateur.save()` génère l'identifiant puis appelle `full_clean()` avant l'écriture, comme les autres modèles.
+  - Les validations concernées relisent les valeurs actuelles depuis la base.
+  - Ajout d'une contrainte unique conditionnelle sur les offres acceptées par expédition et de sa migration.
+  - Ajout de six tests de régression couvrant ces cas.
+- Vérification finale : 25 tests passent avec `uv run python manage.py test`, `uv run python manage.py check` ne signale aucun problème et `uv run python manage.py makemigrations --check --dry-run` ne détecte aucun écart.

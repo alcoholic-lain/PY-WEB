@@ -72,9 +72,9 @@ class Utilisateur(AbstractUser):
     objects = UtilisateurManager()
 
     def save(self, *args, **kwargs):
-        validate_gmail(self.email)  # aussi garanti hors formulaires
         if not self.user_id:
             self.user_id = generate_user_id()
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):

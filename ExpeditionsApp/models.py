@@ -62,10 +62,9 @@ class Expedition(models.Model):
         ]
 
     def clean(self):
-        if (
-            self.entreprise_id
-            and self.entreprise.type_entreprise != Entreprise.Type.CHARGEUR
-        ):
+        if self.entreprise_id and Entreprise.objects.filter(
+            pk=self.entreprise_id
+        ).exclude(type_entreprise=Entreprise.Type.CHARGEUR).exists():
             raise ValidationError(
                 {"entreprise": "Une expédition doit être publiée par une entreprise chargeur."}
             )

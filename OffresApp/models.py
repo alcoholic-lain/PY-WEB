@@ -59,6 +59,12 @@ class Offre(models.Model):
                     "Ce transporteur a déjà une offre active sur cette expédition."
                 ),
             ),
+            models.UniqueConstraint(
+                fields=["expedition"],
+                condition=models.Q(statut="acceptee"),
+                name="offre_unique_acceptee_par_expedition",
+                violation_error_message="Cette expédition a déjà une offre acceptée.",
+            ),
         ]
 
     # ------------------------------------------------------------------
@@ -81,7 +87,9 @@ class Offre(models.Model):
         def ajouter(champ, message):
             erreurs.setdefault(champ, []).append(message)
 
-        transporteur, vehicule, exp = self.transporteur, self.vehicule, self.expedition
+        transporteur = Entreprise.objects.get(pk=self.transporteur_id)
+        vehicule = Vehicule.objects.get(pk=self.vehicule_id)
+        exp = Expedition.objects.get(pk=self.expedition_id)
         creation = self._state.adding
 
         # R1 : seule une entreprise transporteur peut créer une offre
@@ -148,7 +156,7 @@ class Offre(models.Model):
 
     def _cascade_acceptation(self):
         """R5 : expédition -> attribuee ; autres offres 'proposee' -> refusee."""
-        exp = self.expedition
+        exp = Expedition.objects.get(pk=self.expedition_id)
         if exp.statut != Expedition.Statut.ATTRIBUEE:
             exp.statut = Expedition.Statut.ATTRIBUEE
             exp.save()

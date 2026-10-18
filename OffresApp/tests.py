@@ -63,6 +63,10 @@ class IdentifiantsEtValidateurs(BaseCase):
         with self.assertRaises(ValidationError):
             make_user("bad", email="bad@yahoo.fr")
 
+    def test_email_gmail_doit_avoir_un_format_valide(self):
+        with self.assertRaises(ValidationError):
+            make_user("bad_format", email="bad@@gmail.com")
+
     def test_reference_expedition(self):
         yy = timezone.now().strftime("%y")
         self.assertEqual(self.exp.reference, f"EXP-{yy}-00001")
@@ -100,11 +104,27 @@ class IdentifiantsEtValidateurs(BaseCase):
                 immatriculation="Y", type_vehicule="fourgon", capacite_kg=100,
                 entreprise=self.chargeur)
 
+    def test_vehicule_refuse_apres_changement_du_type_entreprise(self):
+        Entreprise.objects.filter(pk=self.t1.pk).update(type_entreprise="chargeur")
+        with self.assertRaises(ValidationError):
+            Vehicule.objects.create(
+                immatriculation="STALE", type_vehicule="fourgon", capacite_kg=100,
+                entreprise=self.t1)
+
     def test_expedition_chez_transporteur_refusee(self):
         with self.assertRaises(ValidationError):
             Expedition.objects.create(
                 ville_depart="a", ville_arrivee="b", poids_kg=10,
                 date_souhaitee=date(2026, 12, 1), entreprise=self.t1)
+
+    def test_expedition_refuse_apres_changement_du_type_entreprise(self):
+        Entreprise.objects.filter(pk=self.chargeur.pk).update(
+            type_entreprise="transporteur"
+        )
+        with self.assertRaises(ValidationError):
+            Expedition.objects.create(
+                ville_depart="a", ville_arrivee="b", poids_kg=10,
+                date_souhaitee=date(2026, 12, 1), entreprise=self.chargeur)
 
 
 class ReglesMetier(BaseCase):
@@ -122,6 +142,11 @@ class ReglesMetier(BaseCase):
     def test_r3_expedition_non_publiee(self):
         self.exp.statut = "en_cours"
         self.exp.save()
+        with self.assertRaises(ValidationError):
+            self.offre().save()
+
+    def test_r3_refuse_expedition_modifiee_en_base(self):
+        Expedition.objects.filter(pk=self.exp.pk).update(statut="attribuee")
         with self.assertRaises(ValidationError):
             self.offre().save()
 
@@ -158,9 +183,25 @@ class ReglesMetier(BaseCase):
         o1.save()
         o1.save()  # ne doit pas lever d'erreur
 
+    def test_r5_une_seule_offre_peut_etre_acceptee(self):
+        o1 = self.offre()
+        o1.save()
+        o1.statut = "acceptee"
+        o1.save()
+
+        o2 = self.offre(transporteur=self.t2, vehicule=self.v2)
+        o2.statut = "acceptee"
+        with self.assertRaises(ValidationError):
+            o2.save()
+
     def test_r6_vehicule_indisponible(self):
         self.v1.disponible = False
         self.v1.save()
+        with self.assertRaises(ValidationError):
+            self.offre().save()
+
+    def test_r6_refuse_vehicule_rendu_indisponible_en_base(self):
+        Vehicule.objects.filter(pk=self.v1.pk).update(disponible=False)
         with self.assertRaises(ValidationError):
             self.offre().save()
 
