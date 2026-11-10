@@ -31,7 +31,7 @@
         }
 
         document.querySelector('meta[name="theme-color"]').content =
-            dark ? "#101c26" : "#102a43";
+            dark ? "#211a26" : "#302639";
     }
 
     const preference = readPreference();
