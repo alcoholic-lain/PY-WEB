@@ -15,6 +15,8 @@
         <dt>Statut</dt><dd>{{ expedition.get_statut_display }}</dd>
     </dl>
     <p>{{ expedition.description }}</p>
+    <p><a href="{% url 'expedition:update' expedition.pk %}">Modifier cette expédition</a></p>
+    <p><a href="{% url 'expedition:delete' expedition.pk %}">Supprimer cette expédition</a></p>
     <p><a href="{% url 'expedition:lister' %}">Retour aux expéditions</a></p>
 </body>
 </html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Supprimer une expédition — TransConnect</title>
+</head>
+<body>
+    <h1>Supprimer l'expédition {{ expedition.reference }} ?</h1>
+    <p>Cette action supprimera également les offres liées à cette expédition.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmer la suppression</button>
+    </form>
+    <p><a href="{% url 'expedition:detail' expedition.pk %}">Annuler</a></p>
+</body>
+</html>

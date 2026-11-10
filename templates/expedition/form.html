@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if object %}Modifier{% else %}Créer{% endif %} une expédition — TransConnect</title>
+</head>
+<body>
+    <h1>{% if object %}Modifier{% else %}Créer{% endif %} une expédition</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if object %}Enregistrer{% else %}Créer{% endif %}</button>
+    </form>
+    <p><a href="{% url 'expedition:lister' %}">Annuler</a></p>
+</body>
+</html>
