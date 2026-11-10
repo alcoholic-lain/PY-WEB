@@ -1,5 +1,6 @@
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
+from django.views.generic import DetailView
 
 from .models import Expedition
 
@@ -17,6 +18,8 @@ def lister(request):
     return render(request, "expedition/lister.html", {"expeditions": expeditions})
 
 
-def detail(request, expedition_id):
-    expedition = get_object_or_404(Expedition, pk=expedition_id)
-    return render(request, "expedition/detail.html", {"expedition": expedition})
+class ExpeditionDetailView(DetailView):
+    model = Expedition
+    template_name = "expedition/detail.html"
+    context_object_name = "expedition"
+    pk_url_kwarg = "expedition_id"
