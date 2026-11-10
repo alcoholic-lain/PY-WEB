@@ -52,7 +52,7 @@ class ExpeditionUpdateView(LoginRequiredMixin, UpdateView):
 
 class ExpeditionDeleteView(LoginRequiredMixin, DeleteView):
     model = Expedition
-    template_name = "expedition/confirm_delete.html"
+    template_name = "expedition/delete.html"
     pk_url_kwarg = "expedition_id"
     success_url = reverse_lazy("expedition:lister")
     login_url = reverse_lazy("admin:login")
