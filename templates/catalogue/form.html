@@ -1,0 +1,19 @@
+{% extends "expedition/base.html" %}
+
+{% block title %}{{ page_title }} — TransConnect{% endblock %}
+
+{% block content %}
+<p class="eyebrow">{% if object.pk %}Mettre à jour{% else %}Nouvelle demande{% endif %}</p>
+<section class="panel form-panel">
+    <h1>{{ page_title }}</h1>
+    <p class="form-intro">{{ form_intro }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-actions">
+            <button type="submit">Enregistrer</button>
+            <a class="button button-secondary" href="{% url cancel_url_name %}">Annuler</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

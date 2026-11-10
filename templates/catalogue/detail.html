@@ -1,0 +1,30 @@
+{% extends "expedition/base.html" %}
+
+{% block title %}{{ object }} — TransConnect{% endblock %}
+
+{% block content %}
+<p class="eyebrow">{{ page_title }}</p>
+<section class="panel detail-panel">
+    <h1>{{ object }}</h1>
+    <dl class="detail-grid">
+        {% for label, value in details %}
+            <div class="detail-item">
+                <dt>{{ label }}</dt>
+                <dd>{{ value|default:"—" }}</dd>
+            </div>
+        {% endfor %}
+    </dl>
+    <div class="detail-actions">
+        {% if can_update %}
+            <a class="button" href="{% url update_url_name object.pk %}">Modifier</a>
+        {% endif %}
+        {% if can_delete %}
+            <a class="button button-secondary" href="{% url delete_url_name object.pk %}">Supprimer</a>
+        {% endif %}
+        {% if not can_update or not can_delete %}
+            <p class="description">Cet élément est lié à des données actives et ne peut pas être modifié ou supprimé.</p>
+        {% endif %}
+        <a class="button button-secondary" href="{% url list_url_name %}">Retour à la liste</a>
+    </div>
+</section>
+{% endblock %}

@@ -19,6 +19,14 @@
             </a>
             <div class="nav-links">
                 <a href="{% url 'expedition:lister' %}">Expéditions</a>
+                <details class="resource-menu">
+                    <summary>Gestion</summary>
+                    <div class="resource-menu-panel">
+                        <a href="{% url 'entreprise:lister' %}">Entreprises</a>
+                        <a href="{% url 'vehicule:lister' %}">Véhicules</a>
+                        <a href="{% url 'offre:lister' %}">Offres</a>
+                    </div>
+                </details>
                 <button class="theme-toggle" type="button" data-theme-toggle
                         aria-label="Activer le thème sombre" aria-pressed="false">
                     <span class="theme-icon" data-theme-icon aria-hidden="true">◐</span>

@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from EntreprisesApp.models import Entreprise, Utilisateur
@@ -218,3 +219,84 @@ class ReglesMetier(BaseCase):
             entreprise=self.t1)
         with self.assertRaises(ValidationError):
             self.offre(vehicule=faible).save()
+
+
+class OffreCRUDTests(BaseCase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.t1.utilisateur)
+
+    def test_offer_list_and_detail(self):
+        offer = self.offre()
+        offer.save()
+        self.assertContains(self.client.get(reverse("offre:lister")), str(offer.prix))
+        self.assertContains(
+            self.client.get(reverse("offre:detail", args=[offer.pk])),
+            self.exp.reference,
+        )
+
+    def test_offer_create_update_and_delete(self):
+        response = self.client.post(
+            reverse("offre:create"),
+            {
+                "prix": "650.00",
+                "delai_jours": 3,
+                "expedition": self.exp.pk,
+                "transporteur": self.t1.pk,
+                "vehicule": self.v1.pk,
+            },
+        )
+        self.assertRedirects(response, reverse("offre:lister"))
+        offer = Offre.objects.get(transporteur=self.t1, expedition=self.exp)
+
+        response = self.client.post(
+            reverse("offre:update", args=[offer.pk]),
+            {
+                "prix": "700.00",
+                "delai_jours": 4,
+                "expedition": self.exp.pk,
+                "transporteur": self.t1.pk,
+                "vehicule": self.v1.pk,
+                "statut": Offre.Statut.RETIREE,
+            },
+        )
+        self.assertRedirects(response, reverse("offre:lister"))
+        offer.refresh_from_db()
+        self.assertEqual(offer.prix, Decimal("700.00"))
+        self.assertEqual(offer.statut, Offre.Statut.RETIREE)
+
+        response = self.client.post(reverse("offre:delete", args=[offer.pk]))
+        self.assertRedirects(response, reverse("offre:lister"))
+        self.assertFalse(Offre.objects.filter(pk=offer.pk).exists())
+
+    def test_accepted_offer_cannot_be_updated_or_deleted(self):
+        offer = self.offre()
+        offer.save()
+        offer.statut = Offre.Statut.ACCEPTEE
+        offer.save()
+
+        self.assertEqual(
+            self.client.get(reverse("offre:update", args=[offer.pk])).status_code,
+            404,
+        )
+        self.assertEqual(
+            self.client.get(reverse("offre:delete", args=[offer.pk])).status_code,
+            404,
+        )
+        self.assertNotContains(
+            self.client.get(reverse("offre:detail", args=[offer.pk])),
+            "Modifier",
+        )
+
+    def test_vehicle_with_offer_cannot_be_updated_or_deleted(self):
+        offer = self.offre()
+        offer.save()
+
+        self.assertEqual(
+            self.client.get(reverse("vehicule:update", args=[self.v1.pk])).status_code,
+            404,
+        )
+        self.assertEqual(
+            self.client.get(reverse("vehicule:delete", args=[self.v1.pk])).status_code,
+            404,
+        )

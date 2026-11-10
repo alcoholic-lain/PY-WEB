@@ -21,5 +21,8 @@ from . import health_admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('entreprises/', include('EntreprisesApp.urls')),
+    path('vehicules/', include('VehiculesApp.urls')),
     path('', include('ExpeditionsApp.urls')),
+    path('offres/', include('OffresApp.urls')),
 ]

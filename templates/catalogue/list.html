@@ -1,0 +1,36 @@
+{% extends "expedition/base.html" %}
+
+{% block title %}{{ page_title }} — TransConnect{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Gestion du transport</p>
+        <h1>{{ page_title }}</h1>
+        <p class="intro">{{ page_intro }}</p>
+    </div>
+    <a class="button" href="{% url create_url_name %}">Créer {{ resource_name }}</a>
+</div>
+
+{% if object_list %}
+    <section class="shipment-list" aria-label="{{ page_title }}">
+    {% for object in object_list %}
+        <a class="shipment-card" href="{% url detail_url_name object.pk %}">
+            <div class="card-top">
+                <span class="reference">{{ resource_name|title }}</span>
+                <span class="route-arrow" aria-hidden="true">→</span>
+            </div>
+            <div class="card-route">{{ object }}</div>
+            <div class="card-meta">Voir le détail</div>
+        </a>
+    {% endfor %}
+    </section>
+{% else %}
+    <section class="empty-state">
+        <span class="empty-icon" aria-hidden="true">＋</span>
+        <h2>Aucun résultat</h2>
+        <p>Créez le premier élément de cette liste.</p>
+        <a class="button" href="{% url create_url_name %}">Créer {{ resource_name }}</a>
+    </section>
+{% endif %}
+{% endblock %}
