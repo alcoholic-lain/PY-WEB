@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Expéditions — TransConnect</title>
+</head>
+<body>
+    <h1>Expéditions</h1>
+    {% if expeditions %}
+        <ul>
+        {% for expedition in expeditions %}
+            <li>
+                <a href="{% url 'expedition:detail' expedition.pk %}">
+                    {{ expedition.reference }} — {{ expedition.ville_depart }} vers {{ expedition.ville_arrivee }}
+                </a>
+                ({{ expedition.get_statut_display }})
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune expédition pour le moment.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | {{ site_title|default:"TransConnect" }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">{{ site_header|default:"TransConnect — Administration" }}</a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}
+<a href="{% url 'admin:health_check' %}">Contrôle d'intégrité</a>
+{% endblock %}

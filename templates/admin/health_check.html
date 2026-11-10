@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Tableau de bord de contrôle d'intégrité</h1>
+
+{% for check in checks %}
+    <section style="margin-bottom: 25px;">
+        <h2>{{ check.title }}</h2>
+        <p>Nombre d'anomalies détectées : <strong>{{ check.count }}</strong></p>
+        {% if check.items %}
+            <ul>
+                {% for item in check.items %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+            {% if check.count > 20 %}
+                <p>Affichage limité aux 20 premiers résultats.</p>
+            {% endif %}
+        {% else %}
+            <p>Aucune anomalie détectée.</p>
+        {% endif %}
+    </section>
+{% endfor %}
+{% endblock %}

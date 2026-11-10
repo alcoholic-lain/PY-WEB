@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ expedition.reference }} — TransConnect</title>
+</head>
+<body>
+    <h1>Expédition {{ expedition.reference }}</h1>
+    <dl>
+        <dt>Départ</dt><dd>{{ expedition.ville_depart }}</dd>
+        <dt>Arrivée</dt><dd>{{ expedition.ville_arrivee }}</dd>
+        <dt>Poids</dt><dd>{{ expedition.poids_kg }} kg</dd>
+        <dt>Date souhaitée</dt><dd>{{ expedition.date_souhaitee }}</dd>
+        <dt>Statut</dt><dd>{{ expedition.get_statut_display }}</dd>
+    </dl>
+    <p>{{ expedition.description }}</p>
+    <p><a href="{% url 'expedition:lister' %}">Retour aux expéditions</a></p>
+</body>
+</html>
