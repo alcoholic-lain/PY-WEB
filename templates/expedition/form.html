@@ -1,17 +1,19 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% if object %}Modifier{% else %}Créer{% endif %} une expédition — TransConnect</title>
-</head>
-<body>
+{% extends "expedition/base.html" %}
+
+{% block title %}{% if object %}Modifier{% else %}Créer{% endif %} une expédition — TransConnect{% endblock %}
+
+{% block content %}
+<p class="eyebrow">{% if object %}Mettre à jour{% else %}Nouvelle demande{% endif %}</p>
+<section class="panel form-panel">
     <h1>{% if object %}Modifier{% else %}Créer{% endif %} une expédition</h1>
+    <p class="form-intro">Renseignez les informations du trajet et de la marchandise.</p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">{% if object %}Enregistrer{% else %}Créer{% endif %}</button>
+        <div class="form-actions">
+            <button type="submit">{% if object %}Enregistrer les modifications{% else %}Publier l'expédition{% endif %}</button>
+            <a class="button button-secondary" href="{% url 'expedition:lister' %}">Annuler</a>
+        </div>
     </form>
-    <p><a href="{% url 'expedition:lister' %}">Annuler</a></p>
-</body>
-</html>
+ </section>
+{% endblock %}

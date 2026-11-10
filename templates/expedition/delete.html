@@ -1,17 +1,20 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Supprimer une expédition — TransConnect</title>
-</head>
-<body>
-    <h1>Supprimer l'expédition {{ expedition.reference }} ?</h1>
+{% extends "expedition/base.html" %}
+
+{% block title %}Supprimer {{ expedition.reference }} — TransConnect{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <span class="warning-mark" aria-hidden="true">!</span>
+    <p class="eyebrow">Confirmation requise</p>
+    <h1>Supprimer cette expédition ?</h1>
+    <p class="intro">Vous êtes sur le point de supprimer l'expédition <strong>{{ expedition.reference }}</strong>.</p>
     <p>Cette action supprimera également les offres liées à cette expédition.</p>
     <form method="post">
         {% csrf_token %}
-        <button type="submit">Confirmer la suppression</button>
+        <div class="form-actions">
+            <button class="button-danger" type="submit">Confirmer la suppression</button>
+            <a class="button button-secondary" href="{% url 'expedition:detail' expedition.pk %}">Garder l'expédition</a>
+        </div>
     </form>
-    <p><a href="{% url 'expedition:detail' expedition.pk %}">Annuler</a></p>
-</body>
-</html>
+ </section>
+{% endblock %}

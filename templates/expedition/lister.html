@@ -1,26 +1,43 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Expéditions — TransConnect</title>
-</head>
-<body>
-    <h1>Expéditions</h1>
-    <p><a href="{% url 'expedition:create' %}">Créer une expédition</a></p>
+{% extends "expedition/base.html" %}
+
+{% block title %}Expéditions — TransConnect{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">Votre activité transport</p>
+        <h1>Expéditions</h1>
+        <p class="intro">Retrouvez et gérez vos demandes de transport en un seul endroit.</p>
+    </div>
+    <a class="button" href="{% url 'expedition:create' %}"><span aria-hidden="true">+</span> Nouvelle expédition</a>
+</div>
+
     {% if expeditions %}
-        <ul>
+        <section class="shipment-list" aria-label="Liste des expéditions">
         {% for expedition in expeditions %}
-            <li>
-                <a href="{% url 'expedition:detail' expedition.pk %}">
-                    {{ expedition.reference }} — {{ expedition.ville_depart }} vers {{ expedition.ville_arrivee }}
-                </a>
-                ({{ expedition.get_statut_display }})
-            </li>
+            <a class="shipment-card" href="{% url 'expedition:detail' expedition.pk %}">
+                <div class="card-top">
+                    <span class="reference">{{ expedition.reference }}</span>
+                    <span class="status">{{ expedition.get_statut_display }}</span>
+                </div>
+                <div class="card-route">
+                    <span>{{ expedition.ville_depart }}</span>
+                    <span class="route-arrow" aria-hidden="true">→</span>
+                    <span>{{ expedition.ville_arrivee }}</span>
+                </div>
+                <div class="card-meta">
+                    <span>{{ expedition.poids_kg }} kg</span>
+                    <span>{{ expedition.date_souhaitee|date:"d/m/Y" }}</span>
+                </div>
+            </a>
         {% endfor %}
-        </ul>
+        </section>
     {% else %}
-        <p>Aucune expédition pour le moment.</p>
+        <section class="empty-state">
+            <span class="empty-icon" aria-hidden="true">↗</span>
+            <h2>Votre première expédition vous attend</h2>
+            <p>Créez une demande et trouvez le transport adapté à votre trajet.</p>
+            <a class="button" href="{% url 'expedition:create' %}">Créer une expédition</a>
+        </section>
     {% endif %}
-</body>
-</html>
+{% endblock %}

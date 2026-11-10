@@ -1,12 +1,12 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TransConnect</title>
-</head>
-<body>
+{% extends "expedition/base.html" %}
+
+{% block title %}Bienvenue — TransConnect{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <p class="eyebrow">Bienvenue chez TransConnect</p>
     <h1>Bonjour, {{ name }} !</h1>
-    <p><a href="{% url 'expedition:lister' %}">Voir les expéditions</a></p>
-</body>
-</html>
+    <p class="intro">Organisez vos expéditions et suivez vos trajets avec simplicité.</p>
+    <a class="button" href="{% url 'expedition:lister' %}">Voir les expéditions <span aria-hidden="true">→</span></a>
+</section>
+{% endblock %}

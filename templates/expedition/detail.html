@@ -1,22 +1,30 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ expedition.reference }} — TransConnect</title>
-</head>
-<body>
-    <h1>Expédition {{ expedition.reference }}</h1>
-    <dl>
-        <dt>Départ</dt><dd>{{ expedition.ville_depart }}</dd>
-        <dt>Arrivée</dt><dd>{{ expedition.ville_arrivee }}</dd>
-        <dt>Poids</dt><dd>{{ expedition.poids_kg }} kg</dd>
-        <dt>Date souhaitée</dt><dd>{{ expedition.date_souhaitee }}</dd>
-        <dt>Statut</dt><dd>{{ expedition.get_statut_display }}</dd>
+{% extends "expedition/base.html" %}
+
+{% block title %}{{ expedition.reference }} — TransConnect{% endblock %}
+
+{% block content %}
+<p class="eyebrow">Détail de l'expédition</p>
+<section class="panel detail-panel">
+    <div class="card-top">
+        <h1>{{ expedition.reference }}</h1>
+        <span class="status">{{ expedition.get_statut_display }}</span>
+    </div>
+    <div class="detail-route">
+        <div><small>Départ</small><strong>{{ expedition.ville_depart }}</strong></div>
+        <span class="route-arrow" aria-hidden="true">→</span>
+        <div><small>Arrivée</small><strong>{{ expedition.ville_arrivee }}</strong></div>
+    </div>
+    <dl class="detail-grid">
+        <div class="detail-item"><dt>Poids de la marchandise</dt><dd>{{ expedition.poids_kg }} kg</dd></div>
+        <div class="detail-item"><dt>Date souhaitée</dt><dd>{{ expedition.date_souhaitee|date:"d F Y" }}</dd></div>
     </dl>
-    <p>{{ expedition.description }}</p>
-    <p><a href="{% url 'expedition:update' expedition.pk %}">Modifier cette expédition</a></p>
-    <p><a href="{% url 'expedition:delete' expedition.pk %}">Supprimer cette expédition</a></p>
-    <p><a href="{% url 'expedition:lister' %}">Retour aux expéditions</a></p>
-</body>
-</html>
+    {% if expedition.description %}
+        <p class="description">{{ expedition.description }}</p>
+    {% endif %}
+    <div class="detail-actions">
+        <a class="button" href="{% url 'expedition:update' expedition.pk %}">Modifier</a>
+        <a class="button button-secondary" href="{% url 'expedition:delete' expedition.pk %}">Supprimer</a>
+        <a class="button button-secondary" href="{% url 'expedition:lister' %}">Retour</a>
+    </div>
+</section>
+{% endblock %}

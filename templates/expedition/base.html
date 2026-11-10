@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#102a43">
+    <title>{% block title %}TransConnect{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'expedition/favicon.svg' %}">
+    <script src="{% static 'expedition/theme.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'expedition/styles.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-shell" aria-label="Navigation principale">
+            <a class="brand" href="{% url 'expedition:lister' %}">
+                <span class="brand-mark" aria-hidden="true">T</span>
+                <span>trans<span class="brand-accent">connect</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'expedition:lister' %}">Expéditions</a>
+                <button class="theme-toggle" type="button" data-theme-toggle
+                        aria-label="Activer le thème sombre" aria-pressed="false">
+                    <span class="theme-icon" data-theme-icon aria-hidden="true">◐</span>
+                    <span data-theme-label>Mode sombre</span>
+                </button>
+                <a class="nav-cta" href="{% url 'expedition:create' %}">Nouvelle expédition <span aria-hidden="true">+</span></a>
+            </div>
+        </nav>
+    </header>
+    <main class="page-shell">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <span>TransConnect</span>
+        <span>Le transport, en toute simplicité.</span>
+    </footer>
+</body>
+</html>
